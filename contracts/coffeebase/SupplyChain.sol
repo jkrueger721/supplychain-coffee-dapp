@@ -1,9 +1,15 @@
 pragma solidity >=0.4.24;
+import "../coffeeaccesscontrol/ConsumerRole.sol";
+import "../coffeeaccesscontrol/DistributorRole.sol";
+import "../coffeeaccesscontrol/FarmerRole.sol";
+import "../coffeeaccesscontrol/RetailerRole.sol";
+
 // Define a contract 'Supplychain'
-contract SupplyChain {
+
+contract SupplyChain is ConsumerRole,DistributorRole,FarmerRole,RetailerRole {
 
   // Define 'owner'
-  address owner;
+  address payable owner;
 
   // Define a variable called 'upc' for Universal Product Code (UPC)
   uint  upc;
@@ -49,7 +55,7 @@ contract SupplyChain {
     State   itemState;  // Product State as represented in the enum above
     address distributorID;  // Metamask-Ethereum address of the Distributor
     address retailerID; // Metamask-Ethereum address of the Retailer
-    address consumerID; // Metamask-Ethereum address of the Consumer
+    address payable consumerID; // Metamask-Ethereum address of the Consumer
   }
 
   // Define 8 events with the same 8 state values and accept 'upc' as input argument
@@ -96,42 +102,48 @@ contract SupplyChain {
 
   // Define a modifier that checks if an item.state of a upc is Processed
   modifier processed(uint _upc) {
-
+    require(items[_upc].itemState == State.Processed);
     _;
   }
   
   // Define a modifier that checks if an item.state of a upc is Packed
   modifier packed(uint _upc) {
+    require(items[_upc].itemState == State.Packed);
 
     _;
   }
 
   // Define a modifier that checks if an item.state of a upc is ForSale
   modifier forSale(uint _upc) {
+    require(items[_upc].itemState == State.ForSale);
 
     _;
   }
 
   // Define a modifier that checks if an item.state of a upc is Sold
   modifier sold(uint _upc) {
+    require(items[_upc].itemState == State.Sold);
 
     _;
   }
   
   // Define a modifier that checks if an item.state of a upc is Shipped
   modifier shipped(uint _upc) {
+    require(items[_upc].itemState == State.Shipped);
 
     _;
   }
 
   // Define a modifier that checks if an item.state of a upc is Received
   modifier received(uint _upc) {
+    require(items[_upc].itemState == State.Received);
 
     _;
   }
 
   // Define a modifier that checks if an item.state of a upc is Purchased
   modifier purchased(uint _upc) {
+    require(items[_upc].itemState == State.Purchased);
     
     _;
   }
