@@ -172,6 +172,7 @@ contract SupplyChain is ConsumerRole,DistributorRole,FarmerRole,RetailerRole {
     items[_upc].sku = sku;
     items[_upc].ownerID = msg.sender;
     items[_upc].originFarmerID = _originFarmerID;
+    items[_upc].originFarmName = _originFarmName;
     items[_upc].originFarmInformation = _originFarmInformation;
     items[_upc].originFarmLatitude =_originFarmLatitude;
     items[_upc].originFarmLongitude = _originFarmLongitude;
@@ -186,7 +187,7 @@ contract SupplyChain is ConsumerRole,DistributorRole,FarmerRole,RetailerRole {
   }
 
   // Define a function 'processtItem' that allows a farmer to mark an item 'Processed'
-  function processItem(uint _upc) public 
+  function processItem(uint _upc) public onlyFarmer
   // Call modifier to check if upc has passed previous supply chain stage
   harvested(upc)
   // Call modifier to verify caller of this function
@@ -232,7 +233,7 @@ contract SupplyChain is ConsumerRole,DistributorRole,FarmerRole,RetailerRole {
   // and any excess ether sent is refunded back to the buyer
   function buyItem(uint _upc) onlyDistributor public  
     // Call modifier to check if upc has passed previous supply chain stage
-    sold(_upc)
+    forSale(_upc)
     // Call modifer to check if buyer has paid enough
     paidEnough(items[_upc].productPrice)
     // Call modifer to send any excess ether back to buyer
@@ -270,7 +271,7 @@ contract SupplyChain is ConsumerRole,DistributorRole,FarmerRole,RetailerRole {
     // Call modifier to check if upc has passed previous supply chain stage
     shipped(_upc)
     // Access Control List enforced by calling Smart Contract / DApp
-    onlyRetailer()
+    onlyRetailer
     {
     // Update the appropriate fields - ownerID, retailerID, itemState
     items[_upc].ownerID = msg.sender;
@@ -286,7 +287,7 @@ contract SupplyChain is ConsumerRole,DistributorRole,FarmerRole,RetailerRole {
     // Call modifier to check if upc has passed previous supply chain stage
     received(_upc)
     // Access Control List enforced by calling Smart Contract / DApp
-    onlyConsumer()
+    onlyConsumer
     {
     // Update the appropriate fields - ownerID, consumerID, itemState
     items[_upc].ownerID = msg.sender;

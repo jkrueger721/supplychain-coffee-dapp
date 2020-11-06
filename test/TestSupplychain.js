@@ -47,16 +47,17 @@ contract('SupplyChain', function(accounts) {
         
         // Declare and Initialize a variable for event
         var eventEmitted = false
-        await supplyChain.addFarmer(originFarmerID, {from: ownerID})
         // Watch the emitted event Harvested()
         supplyChain.Harvested((err, res) => {
             eventEmitted = true;
         })
         
+        await supplyChain.addFarmer(originFarmerID,{from: ownerID});
 
         // Mark an item as Harvested by calling function harvestItem()
         await supplyChain.harvestItem(upc, originFarmerID, originFarmName, originFarmInformation, originFarmLatitude, originFarmLongitude, productNotes, {from: originFarmerID })
-
+       // await supplyChain.addFarmer(ownerID);
+       
         // Retrieve the just now saved item from blockchain by calling function fetchItem()
         const resultBufferOne = await supplyChain.fetchItemBufferOne.call(upc)
         const resultBufferTwo = await supplyChain.fetchItemBufferTwo.call(upc)
@@ -187,7 +188,7 @@ contract('SupplyChain', function(accounts) {
             eventEmitted = true;
         })
         
-        
+        await supplyChain.addDistributor(distributorID);
 
         // Mark an item as Sold by calling function buyItem()
         await supplyChain.buyItem(upc, {from: distributorID, value: web3.utils.toWei("1", "ether")})
@@ -219,7 +220,7 @@ contract('SupplyChain', function(accounts) {
         
 
         // Mark an item as Sold by calling function buyItem()
-        await supplyChain.buyItem(upc, originFarmerID, originFarmName, originFarmInformation, originFarmLatitude, originFarmLongitude, productNotes)
+        await supplyChain.shipItem(upc, {from: distributorID})
         
 
         // Retrieve the just now saved item from blockchain by calling function fetchItem()
