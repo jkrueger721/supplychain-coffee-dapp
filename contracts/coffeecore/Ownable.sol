@@ -19,7 +19,7 @@ contract Ownable is SupplyChain{
     }
 
     /// Define a function modifier 'onlyOwner'
-    modifier onlyOwner() {
+    modifier onlyOwner(){
         require(isOwner());
         _;
     }
