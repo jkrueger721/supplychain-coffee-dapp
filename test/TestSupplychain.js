@@ -41,9 +41,15 @@ contract('SupplyChain', function(accounts) {
     console.log("Retailer: accounts[3] ", accounts[3])
     console.log("Consumer: accounts[4] ", accounts[4])
 
+    //const supplyChain = await SupplyChain.deployed();
+    //await supplyChain.addFarmer(originFarmerID, { from: ownerID });
+    // await supplyChain.addDistributor(distributorID, { from: ownerID });
+    // await supplyChain.addRetailer(retailerID, { from: ownerID });
+    // await supplyChain.addConsumer(consumerID, { from: ownerID });
     // 1st Test
     it("Testing smart contract function harvestItem() that allows a farmer to harvest coffee", async() => {
         const supplyChain = await SupplyChain.deployed()
+        await supplyChain.addFarmer(originFarmerID,{from: ownerID});
         
         // Declare and Initialize a variable for event
         var eventEmitted = false
@@ -52,11 +58,10 @@ contract('SupplyChain', function(accounts) {
             eventEmitted = true;
         })
         
-        await supplyChain.addFarmer(originFarmerID,{from: ownerID});
 
         // Mark an item as Harvested by calling function harvestItem()
         await supplyChain.harvestItem(upc, originFarmerID, originFarmName, originFarmInformation, originFarmLatitude, originFarmLongitude, productNotes, {from: originFarmerID })
-        await supplyChain.addFarmer(ownerID);
+        //await supplyChain.addFarmer(ownerID);
        
         // Retrieve the just now saved item from blockchain by calling function fetchItem()
         const resultBufferOne = await supplyChain.fetchItemBufferOne.call(upc)
@@ -161,7 +166,7 @@ contract('SupplyChain', function(accounts) {
         
 
         // Mark an item as ForSale by calling function sellItem()
-        await supplyChain.sellItem(upc, productPrice, {from: originFarmerID})
+        await supplyChain.sellItem(upc, productPrice, {from: originFarmerID});
         
 
         // Retrieve the just now saved item from blockchain by calling function fetchItem()
@@ -191,7 +196,7 @@ contract('SupplyChain', function(accounts) {
         await supplyChain.addDistributor(distributorID,{from:ownerID});
 
         // Mark an item as Sold by calling function buyItem()
-        await supplyChain.buyItem(upc, {from: distributorID, value: web3.utils.toWei("1", "ether")})
+        await supplyChain.buyItem(upc, { from: distributorID, value: productPrice.toString() });
         
 
         // Retrieve the just now saved item from blockchain by calling function fetchItem()
@@ -290,7 +295,7 @@ contract('SupplyChain', function(accounts) {
         
 
         // Mark an item as Sold by calling function buyItem()
-        await supplyChain.addConsumer(consumerID)
+        await supplyChain.addConsumer(consumerID, {from:ownerID});
         await supplyChain.purchaseItem(upc)
         
 
