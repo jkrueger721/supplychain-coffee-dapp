@@ -1,25 +1,44 @@
+const HDWalletProvider = require('truffle-hdwallet-provider');
+const infuraKey = "49e069ced9314a6ea21b823c839321cd";
+//
+// const fs = require('fs');
+const mnemonic = "wrist enroll mouse identify weapon salute trial pole river treat absent disease";
+
 module.exports = {
+
   networks: {
     development: {
-      host: "127.0.0.1",
-      port: 7545,
-      network_id: "*" // Match any network id
-    }
+      host: "127.0.0.1",     // Localhost (default: none)
+      port: 8545,            // Standard Ethereum port (default: none)
+      network_id: "*",       // Any network (default: none)
+     },
+    // Useful for deploying to a public network.
+    // NB: It's important to wrap the provider as a function.
+    rinkeby: {
+      provider: () => new HDWalletProvider(mnemonic, `https://rinkeby.infura.io/v3/${infuraKey}`),
+        network_id: 4,       // rinkeby's id
+        gas: 4500000,        // rinkeby has a lower block limit than mainnet
+        gasPrice: 10000000000
+    },
   },
+
+  // Set default mocha options here, use special reporters etc.
+  mocha: {
+    // timeout: 100000
+  },
+
+  // Configure your compilers
   compilers: {
     solc: {
-     // version: "0.4.24", // A version or constraint - Ex. "^0.5.0"
-                         // Can also be set to "native" to use a native solc
-      /* docker: <boolean>, // Use a version obtained through docker
-      parser: "solcjs",  // Leverages solc-js purely for speedy parsing
-      settings: {
-        optimizer: {
-          enabled: <boolean>,
-          runs: <number>   // Optimize for how many times you intend to run the code
-        },
-        evmVersion: <string> // Default: "petersburg"
-      }
+       //version: "0.6.2",    // Fetch exact version from solc-bin (default: truffle's version)
+      // docker: true,        // Use "0.5.1" you've installed locally with docker (default: false)
+      // settings: {          // See the solidity docs for advice about optimization and evmVersion
+      //  optimizer: {
+      //    enabled: false,
+      //    runs: 200
+      //  },
+      //  evmVersion: "byzantium"
+      // }
     }
-  } */}
-}
+  }
 }

@@ -172,6 +172,7 @@ contract SupplyChain is ConsumerRole,DistributorRole,FarmerRole,RetailerRole {
     items[_upc].sku = sku;
     items[_upc].ownerID = msg.sender;
     items[_upc].originFarmerID = _originFarmerID;
+    items[_upc].productID = sku + _upc;
     items[_upc].originFarmName = _originFarmName;
     items[_upc].originFarmInformation = _originFarmInformation;
     items[_upc].originFarmLatitude =_originFarmLatitude;
