@@ -3,10 +3,11 @@ import "../coffeeaccesscontrol/ConsumerRole.sol";
 import "../coffeeaccesscontrol/DistributorRole.sol";
 import "../coffeeaccesscontrol/FarmerRole.sol";
 import "../coffeeaccesscontrol/RetailerRole.sol";
+import "../coffeecore/Ownable.sol";
 
 // Define a contract 'Supplychain'
 
-contract SupplyChain is ConsumerRole,DistributorRole,FarmerRole,RetailerRole {
+contract SupplyChain is Ownable, ConsumerRole,DistributorRole,FarmerRole,RetailerRole {
 
   // Define 'owner'
   address payable owner;
@@ -69,10 +70,10 @@ contract SupplyChain is ConsumerRole,DistributorRole,FarmerRole,RetailerRole {
   event Purchased(uint upc);
 
   // Define a modifer that checks to see if msg.sender == owner of the contract
-  modifier onlyOwner() {
-    require(msg.sender == owner);
-    _;
-  }
+  // modifier onlyOwner() {
+  //   require(msg.sender == owner);
+  //   _;
+  // }
 
   // Define a modifer that verifies the Caller
   modifier verifyCaller(address _address) {
@@ -166,6 +167,7 @@ contract SupplyChain is ConsumerRole,DistributorRole,FarmerRole,RetailerRole {
 
   // Define a function 'harvestItem' that allows a farmer to mark an item 'Harvested'
   function harvestItem(uint _upc, address payable _originFarmerID,  string memory _originFarmName,  string memory _originFarmInformation,  string memory  _originFarmLatitude, string memory  _originFarmLongitude, string memory  _productNotes) public 
+  onlyFarmer
   {
     // Add the new item as part of Harvest
     items[_upc].upc = _upc;
@@ -188,8 +190,9 @@ contract SupplyChain is ConsumerRole,DistributorRole,FarmerRole,RetailerRole {
   }
 
   // Define a function 'processtItem' that allows a farmer to mark an item 'Processed'
-  function processItem(uint _upc) public onlyFarmer()
+  function processItem(uint _upc) public 
   // Call modifier to check if upc has passed previous supply chain stage
+  onlyFarmer
   harvested(upc)
   // Call modifier to verify caller of this function
   verifyCaller(items[_upc].originFarmerID)
@@ -216,8 +219,9 @@ contract SupplyChain is ConsumerRole,DistributorRole,FarmerRole,RetailerRole {
   }
 
   // Define a function 'sellItem' that allows a farmer to mark an item 'ForSale'
-  function sellItem(uint _upc, uint _price) onlyFarmer public 
+  function sellItem(uint _upc, uint _price)  public 
   // Call modifier to check if upc has passed previous supply chain stage
+  onlyFarmer
   packed(_upc)
   // Call modifier to verify caller of this function
   verifyCaller(items[_upc].originFarmerID)
@@ -232,8 +236,9 @@ contract SupplyChain is ConsumerRole,DistributorRole,FarmerRole,RetailerRole {
   // Define a function 'buyItem' that allows the disributor to mark an item 'Sold'
   // Use the above defined modifiers to check if the item is available for sale, if the buyer has paid enough, 
   // and any excess ether sent is refunded back to the buyer
-  function buyItem(uint _upc) onlyDistributor public payable
+  function buyItem(uint _upc)  public payable
     // Call modifier to check if upc has passed previous supply chain stage
+    onlyDistributor
     forSale(_upc)
     // Call modifer to check if buyer has paid enough
     paidEnough(items[_upc].productPrice)
